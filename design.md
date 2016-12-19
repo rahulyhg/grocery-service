@@ -16,6 +16,7 @@ I am building this service because I want to:
 Contains all information about a recipe - this includes the name, a short description, all of the ingredients, the amounts required, how many it serves and the method.
 ```
 Recipe(
+	id: integer,
 	name: string,
 	description: string,
 	method: string,
@@ -50,6 +51,7 @@ Retrieves all recipes
 ```
 [
 	{
+		"id": 1,
 		"name": "Ham Sandwich",
 		"description": "The perfect blend between blandness and lazyness",
 		"method": "Get bread, butter it then stick ham in the middle fool!",
@@ -57,18 +59,21 @@ Retrieves all recipes
 		"ingredients": [
 		    {
 				"details": {
+				    "id": 1,
 				    "name": "Bread"
 				},
 				"amount": "4 slices"
 		    },
 		    {
 				"details": {
+				    "id": 2,
 				    "name": "Butter"
 				},
 				"amount": "2 Tablespoons"
 		    },
 		    {
 				"details": {
+				    "id": 3,
 				    "name": "Ham"
 				},
 				"amount": "2 Tablespoons"
@@ -76,6 +81,7 @@ Retrieves all recipes
 		]
 	},
 	{
+		"id": 2,
 		"name": "Ham Toastie",
 		"description": "A little less lazy makes a little less bland.",
 		"method": "Make a ham sandwich - but then like fry it or put it in a toastie maker or some shit.",
@@ -83,18 +89,21 @@ Retrieves all recipes
 		"ingredients": [
 		    {
 				"details": {
+				    "id": 1,
 				    "name": "Bread"
 				},
 				"amount": "4 slices"
 		    },
 		    {
 				"details": {
+				    "id": 2,
 				    "name": "Butter"
 				},
 				"amount": "3 Tablespoons"
 		    },
 		    {
 				"details": {
+				    "id": 3,
 				    "name": "Ham"
 				},
 				"amount": "2 Tablespoons"

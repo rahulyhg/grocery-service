@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Hydrator;
+
+use App\Domain\Recipe;
+
+class RecipeHydrator
+{
+    public function hydrate(\stdClass $data) : Recipe
+    {
+        
+    }
+}

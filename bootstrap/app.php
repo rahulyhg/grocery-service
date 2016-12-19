@@ -77,6 +77,9 @@ $app->singleton(
 | totally optional, so you are not required to uncomment this line.
 |
 */
+$app->register(App\Recipe\RecipeProvider::class);
+$app->register(GrahamCampbell\Exceptions\ExceptionsServiceProvider::class);
+
 
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
@@ -93,8 +96,8 @@ $app->singleton(
 |
 */
 
-$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
-    require __DIR__.'/../routes/web.php';
+$app->group(['namespace' => 'App\Recipe'], function($app) {
+    require __DIR__.'/../routes/recipe.php';
 });
 
 return $app;

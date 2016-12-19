@@ -11,6 +11,17 @@
 |
 */
 
-$app->get('/', function() {
-    return [];
-});
+$app->get(
+    '/recipes',
+    'RecipeController@index'
+);
+
+$app->get(
+    '/recipes/{id}',
+    'RecipeController@show'
+);
+
+$app->post(
+    '/recipes',
+    'RecipeController@store'
+);
