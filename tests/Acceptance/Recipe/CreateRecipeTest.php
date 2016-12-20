@@ -1,15 +1,17 @@
 <?php
 
+use App\Recipe\Contracts\RecipeSource;
+use App\Recipe\Recipe;
+
 class CreateRecipeTest extends TestCase
 {
     /**
-     * TODO: I want the source to predictably return the same
-     * id - instead of just asserting against the stucture.
-     * I'm thinking creating a "stub" source might solve this.
      * @test
      */
     public function itShouldReturnACompleteRecipeWithTheCorrectParameters()
     {
+        $this->configureStubRecipeSource();
+
         $response = $this->call(
             'POST',
             '/recipes',
@@ -22,15 +24,15 @@ class CreateRecipeTest extends TestCase
         );
 
         $this->assertEquals(
-            [
-                'id',
-                'name',
-                'description',
-                'method',
-                'servings',
-                'ingredients'
+            (object) [
+                'id' => 1337,
+                'name' => 'A new recipe',
+                'description' => 'A magical new recipe to trial.',
+                'method' => 'Magic! We are not too sure yet.',
+                'servings' => 4,
+                'ingredients' => []
             ],
-            array_keys((array) $response->getData()->data)
+            $response->getData()->data
         );
     }
 
@@ -55,6 +57,32 @@ class CreateRecipeTest extends TestCase
                 ]
             ],
             $response->getData()
+        );
+    }
+
+    private function configureStubRecipeSource()
+    {
+        $stubRecipeSource = function () {
+            return new class implements RecipeSource {
+                public function findById(int $recipeId) : ?stdClass
+                {
+                }
+
+                public function findAll() : array
+                {
+                    return [];
+                }
+
+                public function persistRecipe(Recipe $recipeToCreate) : int
+                {
+                    return 1337;
+                }
+            };
+        };
+
+        $this->app->bind(
+            RecipeSource::class,
+            $stubRecipeSource
         );
     }
 }

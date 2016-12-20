@@ -62,9 +62,9 @@ class GetRecipeTest extends TestCase
 
         $this->assertEquals(
             (object) [
-                "code" => "error",
-                "messages" => [
-                    "The recipe requested was not found"
+                'code' => 'error',
+                'data' => [
+                    'The recipe requested was not found'
                 ]
             ],
             $response->getData()

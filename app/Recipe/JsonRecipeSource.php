@@ -9,6 +9,10 @@ class JsonRecipeSource implements RecipeSource
 {
     private $dataDir;
 
+    const REJECTED_FILES = [
+        '.DS_Store'
+    ];
+
     public function __construct()
     {
         $this->dataDir = __DIR__ . '/data/';
@@ -40,7 +44,29 @@ class JsonRecipeSource implements RecipeSource
 
     public function persistRecipe(Recipe $recipeToCreate) : int
     {
-        return 1;
+        // bit of a hack - but this is a temp source so who cares.
+        $recipe = clone $recipeToCreate;
+
+        $id = $this->getNextId();
+        $recipe->setId($id);
+
+        file_put_contents(
+            $this->dataDir . 'recipe-' . $id . '.json',
+            json_encode($recipe)
+        );
+
+        return $id;
+    }
+
+    private function getNextId()
+    {
+        $files = $this->getDataFiles();
+        $lastFile = end($files);
+
+        $lastFile = substr($lastFile, strpos($lastFile, "-") + 1);
+        $lastId = str_replace('.json', '', $lastFile);
+
+        return ++$lastId;
     }
 
     private function getDataFiles()
@@ -51,9 +77,7 @@ class JsonRecipeSource implements RecipeSource
         );
 
         foreach ($files as $key => $file) {
-            $lastChar = substr($file, -1);
-
-            if ($lastChar === '~') {
+            if (in_array($file, self::REJECTED_FILES)) {
                 unset($files[$key]);
             }
         }
