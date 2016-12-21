@@ -99,5 +99,8 @@ $app->register(GrahamCampbell\Exceptions\ExceptionsServiceProvider::class);
 $app->group(['namespace' => 'App\Recipe'], function($app) {
     require __DIR__.'/../routes/recipe.php';
 });
+$app->group(['namespace' => 'App\Ingredient'], function($app) {
+    require __DIR__.'/../routes/ingredient.php';
+});
 
 return $app;

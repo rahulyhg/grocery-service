@@ -2,12 +2,12 @@
 
 namespace App\Recipe;
 
-use App\Recipe\Recipe;
+use App\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Validation\Factory as Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-final class RecipeController
+final class RecipeController extends Controller
 {
     private $recipeRepo;
 
@@ -68,44 +68,5 @@ final class RecipeController
         );
 
         return $this->success($newRecipe);
-    }
-
-    private function success($data) : JsonResponse
-    {
-        return $this->response(
-            'success',
-            $data,
-            200
-        );
-    }
-
-    private function notFound(string $message) : JsonResponse
-    {
-        return $this->response(
-            'error',
-            [$message],
-            404
-        );
-    }
-
-    private function badRequest($messages) : JsonResponse
-    {
-        return $this->response(
-            'error',
-            $messages,
-            400
-        );
-    }
-
-    private function response($code, $data, $status) : JsonResponse
-    {
-        return response()
-            ->json(
-                (object) [
-                    'code' => $code,
-                    'data' => $data
-                ],
-                $status
-            );
     }
 }

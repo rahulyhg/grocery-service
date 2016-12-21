@@ -1,0 +1,13 @@
+{
+	"code": "success",
+	"data": [{
+		"id": 1,
+		"name": "Bread"
+	}, {
+		"id": 2,
+		"name": "Ham"
+	}, {
+		"id": 3,
+		"name": "Butter"
+	}]
+}
