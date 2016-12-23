@@ -1,5 +1,8 @@
 <?php
 
+use App\Recipe\Contracts\RecipeSource;
+use App\Recipe\Recipe;
+
 class GetRecipeTest extends TestCase
 {
     /**
@@ -23,6 +26,8 @@ class GetRecipeTest extends TestCase
      */
     public function itShouldReturnAnArrayOfRecipes()
     {
+        $this->configureStubRecipeSource();
+
         $response = $this->call(
             'GET',
             '/recipes'
@@ -68,6 +73,36 @@ class GetRecipeTest extends TestCase
                 ]
             ],
             $response->getData()
+        );
+    }
+
+    private function configureStubRecipeSource()
+    {
+        $stubRecipeSource = function () {
+            return new class implements RecipeSource {
+                public function findById(int $recipeId) : ?stdClass
+                {
+                }
+
+                public function findAll() : array
+                {
+                    $baseDir = __DIR__ . '/../../../app/Recipe/data/';
+                    $recipe1 = json_decode(file_get_contents($baseDir.'recipe-1.json'));
+                    $recipe2 = json_decode(file_get_contents($baseDir.'recipe-2.json'));
+
+                    return [$recipe1, $recipe2];
+                }
+
+                public function persistRecipe(Recipe $recipeToCreate) : int
+                {
+                    return 1;
+                }
+            };
+        };
+
+        $this->app->bind(
+            RecipeSource::class,
+            $stubRecipeSource
         );
     }
 }
