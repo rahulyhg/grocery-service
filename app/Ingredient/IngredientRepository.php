@@ -2,6 +2,8 @@
 
 namespace App\Ingredient;
 
+use App\Ingredient\Contracts\IngredientSource;
+
 class IngredientRepository
 {
     private $hydrator;

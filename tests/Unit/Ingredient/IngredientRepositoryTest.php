@@ -2,6 +2,8 @@
 
 namespace App\Ingredient;
 
+use App\Ingredient\Contracts\IngredientSource;
+
 class IngredientRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     private $sut;
