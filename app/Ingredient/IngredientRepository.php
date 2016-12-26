@@ -20,11 +20,13 @@ class IngredientRepository
 
     public function findAll() : array
     {
-        $ingredients = $this->source->findAll();
+        $ingredientData = $this->source->findAll();
 
-        return array_map(function ($ingredient) {
+        $ingredients = array_map(function ($ingredient) {
             return $this->hydrator->hydrate($ingredient);
-        }, $ingredients);
+        }, $ingredientData);
+
+        return array_values($ingredients);
     }
 
     public function findById(int $id) : ?Ingredient

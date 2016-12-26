@@ -3,15 +3,12 @@
 namespace App\Recipe;
 
 use stdClass;
+use App\Traits\IsJsonSource;
 use App\Recipe\Contracts\RecipeSource;
 
 class JsonRecipeSource implements RecipeSource
 {
-    private $dataDir;
-
-    const REJECTED_FILES = [
-        '.DS_Store'
-    ];
+    use IsJsonSource;
 
     public function __construct()
     {
@@ -56,32 +53,5 @@ class JsonRecipeSource implements RecipeSource
         );
 
         return $id;
-    }
-
-    private function getNextId()
-    {
-        $files = $this->getDataFiles();
-        $lastFile = end($files);
-
-        $lastFile = substr($lastFile, strpos($lastFile, "-") + 1);
-        $lastId = str_replace('.json', '', $lastFile);
-
-        return ++$lastId;
-    }
-
-    private function getDataFiles()
-    {
-        $files = array_diff(
-            scandir($this->dataDir),
-            array('.', '..')
-        );
-
-        foreach ($files as $key => $file) {
-            if (in_array($file, self::REJECTED_FILES)) {
-                unset($files[$key]);
-            }
-        }
-
-        return $files;
     }
 }

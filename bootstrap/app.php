@@ -78,6 +78,8 @@ $app->singleton(
 |
 */
 $app->register(App\Recipe\RecipeProvider::class);
+$app->register(App\Ingredient\IngredientProvider::class);
+
 $app->register(GrahamCampbell\Exceptions\ExceptionsServiceProvider::class);
 
 

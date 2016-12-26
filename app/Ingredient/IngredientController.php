@@ -6,13 +6,17 @@ use App\Http\Controller;
 
 final class IngredientController extends Controller
 {
+    private $ingredientRepo;
+
+    public function __construct(
+        IngredientRepository $ingredientRepo
+    ) {
+        $this->ingredientRepo = $ingredientRepo;
+    }
+
     public function index()
     {
-        $ingredients = [
-            (new Ingredient('Bread'))->setId(1),
-            (new Ingredient('Ham'))->setId(2),
-            (new Ingredient('Butter'))->setId(3)
-        ];
+        $ingredients = $this->ingredientRepo->findAll();
 
         return $this->success($ingredients);
     }
