@@ -26,7 +26,16 @@ class JsonIngredientSource implements IngredientSource
         }, $files);
     }
 
-    public function findById(int $id) : ?stdClass
+    public function findById(int $ingredientId) : ?stdClass
     {
+        $file = $this->dataDir . 'ingredient-' . $ingredientId . '.json';
+
+        if (!file_exists($file)) {
+            return null;
+        }
+
+        return json_decode(
+            file_get_contents($file)
+        );
     }
 }

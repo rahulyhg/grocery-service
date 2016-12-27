@@ -23,12 +23,11 @@ final class IngredientController extends Controller
 
     public function show($id)
     {
-        if ($id != 1) {
+        $ingredient = $this->ingredientRepo->findById($id);
+
+        if (is_null($ingredient)) {
             return $this->notFound('Could not find the ingredient requested');
         }
-
-        $ingredient = new Ingredient('Bread');
-        $ingredient->setId(1);
 
         return $this->success($ingredient);
     }
