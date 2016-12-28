@@ -37,6 +37,22 @@ class CreateIngredientTest extends TestCase
      */
     public function itShouldReturnAnErrorIfInvalidParametersAreProvided()
     {
+        $response = $this->call(
+            'POST',
+            '/ingredients',
+            [
+            ]
+        );
+
+        $this->assertEquals(
+            (object) [
+                'code' => 'error',
+                'data' => (object) [
+                    'name' => ['The name field is required.']
+                ]
+            ],
+            $response->getData()
+        );
     }
 
     private function configureStubIngredientSource()
