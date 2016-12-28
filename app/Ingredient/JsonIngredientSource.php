@@ -38,4 +38,20 @@ class JsonIngredientSource implements IngredientSource
             file_get_contents($file)
         );
     }
+
+    public function persistIngredient(
+        Ingredient $ingredientToCreate
+    ) : int {
+        $ingredient = clone $ingredientToCreate;
+
+        $id = $this->getNextId();
+        $ingredient->setId($id);
+
+        file_put_contents(
+            $this->dataDir . 'ingredient-' . $id . '.json',
+            json_encode($ingredient)
+        );
+
+        return $id;
+    }
 }

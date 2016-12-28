@@ -119,4 +119,26 @@ class IngredientRepositoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNull($ingredient);
     }
+
+    /**
+     * @test
+     */
+    public function itShouldReturnAFullIngredientWhenPersistingWithTheCorrectDetails()
+    {
+        $expectedIngredient = (new Ingredient('Testing 123'))
+            ->setId(1337);
+
+        $this->source->expects($this->once())
+            ->method('persistIngredient')
+            ->willReturn(1337);
+
+        $ingredient = $this->sut->createIngredient(
+            new Ingredient('Testing 123')
+        );
+
+        $this->assertEquals(
+            $expectedIngredient,
+            $ingredient
+        );
+    }
 }

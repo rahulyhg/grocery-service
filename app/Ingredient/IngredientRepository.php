@@ -39,4 +39,14 @@ class IngredientRepository
 
         return $this->hydrator->hydrate($ingredient);
     }
+
+    public function createIngredient(
+        Ingredient $ingredientToCreate
+    ) : Ingredient {
+        $ingredientId = $this->source->persistIngredient(
+            $ingredientToCreate
+        );
+
+        return $ingredientToCreate->setId($ingredientId);
+    }
 }

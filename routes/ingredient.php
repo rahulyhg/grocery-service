@@ -5,6 +5,11 @@ $app->get(
     'IngredientController@index'
 );
 
+$app->post(
+    '/ingredients',
+    'IngredientController@store'
+);
+
 $app->get(
     '/ingredients/{id}',
     'IngredientController@show'

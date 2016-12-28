@@ -3,15 +3,20 @@
 namespace App\Ingredient;
 
 use App\Http\Controller;
+use Illuminate\Http\Request;
 
 final class IngredientController extends Controller
 {
     private $ingredientRepo;
 
+    private $hydrator;
+
     public function __construct(
-        IngredientRepository $ingredientRepo
+        IngredientRepository $ingredientRepo,
+        IngredientHydrator $hydrator
     ) {
         $this->ingredientRepo = $ingredientRepo;
+        $this->hydrator = $hydrator;
     }
 
     public function index()
@@ -30,5 +35,18 @@ final class IngredientController extends Controller
         }
 
         return $this->success($ingredient);
+    }
+
+    public function store(Request $request)
+    {
+        $ingredientToCreate = $this->hydrator->hydrate(
+            (object) $request->all()
+        );
+
+        $newIngredient = $this->ingredientRepo->createIngredient(
+            $ingredientToCreate
+        );
+
+        return $this->success($newIngredient);
     }
 }
