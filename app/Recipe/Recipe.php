@@ -69,9 +69,10 @@ class Recipe implements \JsonSerializable
         return $this->ingredients;
     }
 
-    public function addIngredient($ingredient) : Recipe
-    {
-        $this->ingredients[] = $ingredient;
+    public function addIngredient(
+        RecipeIngredient $recipeIngredient
+    ) : Recipe {
+        $this->ingredients[] = $recipeIngredient;
 
         return $this;
     }

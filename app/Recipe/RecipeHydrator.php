@@ -59,10 +59,15 @@ class RecipeHydrator
     ) {
         foreach ($ingredients as $ingredient) {
             $ingredientToAdd = $this->ingredientHydrator->hydrate(
-                $ingredient
+                $ingredient->details
             );
 
-            $recipe->addIngredient($ingredientToAdd);
+            $recipeIngredient = new RecipeIngredient(
+                $ingredientToAdd,
+                $ingredient->amount
+            );
+
+            $recipe->addIngredient($recipeIngredient);
         }
     }
 }

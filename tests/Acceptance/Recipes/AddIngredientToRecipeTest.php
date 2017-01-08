@@ -1,5 +1,9 @@
 <?php
 
+use App\Recipe\Contracts\RecipeSource;
+use App\Recipe\Recipe;
+use App\Recipe\RecipeIngredient;
+
 class AddIngredientToRecipeTest extends TestCase
 {
     /**
@@ -7,6 +11,8 @@ class AddIngredientToRecipeTest extends TestCase
      */
     public function itShouldReturnAFullRecipeIngredientWhenTheCorrectDataIsPassed()
     {
+        $this->configureStubRecipeSource();
+
         $response = $this->call(
             'PUT',
             '/recipes/1/ingredients',
@@ -45,5 +51,39 @@ class AddIngredientToRecipeTest extends TestCase
     public function itShouldReturnAnErrorIfTheIngredientDoesNotExist()
     {
         
+    }
+
+    private function configureStubRecipeSource()
+    {
+        $stubRecipeSource = function () {
+            return new class implements RecipeSource {
+                public function findById(int $recipeId) : ?stdClass
+                {
+                    return null;
+                }
+
+                public function findAll() : array
+                {
+                    return [];
+                }
+
+                public function persistRecipe(Recipe $recipeToCreate) : int
+                {
+                    return 1;
+                }
+
+                public function addIngredientToRecipe(
+                    $recipeId,
+                    RecipeIngredient $recipeIngredient
+                ) : bool {
+                    return true;
+                }
+            };
+        };
+
+        $this->app->bind(
+            RecipeSource::class,
+            $stubRecipeSource
+        );
     }
 }

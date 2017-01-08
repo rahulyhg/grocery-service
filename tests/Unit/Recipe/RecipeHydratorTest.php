@@ -87,10 +87,14 @@ class RecipeHydratorTest extends \PHPUnit\Framework\TestCase
 
         $this->ingredientHydrator->expects($this->at(0))
             ->method('hydrate')
-            ->willReturn($expectedIngredients[0]);
+            ->willReturn(
+                $expectedIngredients[0]->getDetails()
+            );
         $this->ingredientHydrator->expects($this->at(1))
             ->method('hydrate')
-            ->willReturn($expectedIngredients[1]);
+            ->willReturn(
+                $expectedIngredients[1]->getDetails()
+            );
 
         $recipe = $this->sut->hydrate(
             (object) [
@@ -100,14 +104,20 @@ class RecipeHydratorTest extends \PHPUnit\Framework\TestCase
                 'method' => 'asdf',
                 'servings' => 123,
                 'ingredients' => [
-                     (object) [
-                        'id' => 1,
-                        'name' => 'Bread'
+                    (object) [
+                        'details' => (object) [
+                            'id' => 1,
+                            'name' => 'Bread'
+                        ],
+                        'amount' => '4 slices'
                     ],
                     (object) [
-                        'id' => 2,
-                        'name' => 'Ham'
-                    ]
+                        'details' => (object) [
+                            'id' => 2,
+                            'name' => 'Ham'
+                        ],
+                        'amount' => '2 slices'
+                    ],
                 ]
             ]
         );
@@ -120,8 +130,14 @@ class RecipeHydratorTest extends \PHPUnit\Framework\TestCase
 
     private function getExampleIngredients()
     {
-        $ingredient1 = (new Ingredient('Bread'))->setId(1);
-        $ingredient2 = (new Ingredient('Ham'))->setId(2);
+        $ingredient1 = new RecipeIngredient(
+            (new Ingredient('Bread'))->setId(1),
+            '4 slices'
+        );
+        $ingredient2 = new RecipeIngredient(
+            (new Ingredient('Ham'))->setId(2),
+            '2 slices'
+        );
 
         return [$ingredient1, $ingredient2];
     }

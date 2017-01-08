@@ -156,10 +156,7 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldAddAnIngredientToARecipe()
     {
-        $ingredient = $this->setUpAddIngredientToRecipe();
-
-        $expectedRecipeIngredient = new RecipeIngredient(
-            $ingredient,
+        $expectedRecipeIngredient = $this->setUpAddIngredientToRecipe(
             self::TEST_AMOUNT
         );
 
@@ -180,7 +177,10 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
      */
     public function itShouldReturnNullIfItEncountersAnIssueWhenAddingAnIngredientToARecipe()
     {
-        $this->setUpAddIngredientToRecipe(false);
+        $this->setUpAddIngredientToRecipe(
+            self::TEST_AMOUNT,
+            false
+        );
 
         $recipeIngredient = $this->sut->addIngredientToRecipe(
             self::TEST_RECIPE_ID,
@@ -225,10 +225,17 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
             ]);
     }
 
-    private function setUpAddIngredientToRecipe($success = true)
-    {
+    private function setUpAddIngredientToRecipe(
+        string $amount,
+        bool $success = true
+    ) {
         $ingredient = (new Ingredient('Bread'))
             ->setId(1);
+
+        $recipeIngredient = new RecipeIngredient(
+            $ingredient,
+            $amount
+        );
 
         $this->ingredientRepo->expects($this->once())
             ->method('findById')
@@ -238,11 +245,10 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
             ->method('addIngredientToRecipe')
             ->with(
                 $this->equalTo(self::TEST_RECIPE_ID),
-                $this->equalTo($ingredient),
-                $this->equalTo(self::TEST_AMOUNT)
+                $this->equalTo($recipeIngredient)
             )
             ->willReturn($success);
 
-        return $ingredient;
+        return $recipeIngredient;
     }
 }

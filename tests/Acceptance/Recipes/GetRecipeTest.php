@@ -2,7 +2,7 @@
 
 use App\Recipe\Contracts\RecipeSource;
 use App\Recipe\Recipe;
-use App\Ingredient\Ingredient;
+use App\Recipe\RecipeIngredient;
 
 class GetRecipeTest extends TestCase
 {
@@ -95,8 +95,17 @@ class GetRecipeTest extends TestCase
                 public function findAll() : array
                 {
                     $baseDir = __DIR__ . '/../../../app/Recipe/data/';
+
                     $recipe1 = json_decode(file_get_contents($baseDir.'recipe-1.json'));
-                    $recipe1->ingredients = [];
+                    $recipe1->ingredients = [
+                        (object) [
+                            'details' => (object) [
+                                'id' => 1,
+                                'name' => 'Bread'
+                            ],
+                            'amount' => '4 slices'
+                        ]
+                    ];
 
                     $recipe2 = json_decode(file_get_contents($baseDir.'recipe-2.json'));
 
@@ -110,8 +119,7 @@ class GetRecipeTest extends TestCase
 
                 public function addIngredientToRecipe(
                     $recipeId,
-                    Ingredient $Ingredient,
-                    $amount
+                    RecipeIngredient $recipeIngredient
                 ) : bool {
                     return true;
                 }

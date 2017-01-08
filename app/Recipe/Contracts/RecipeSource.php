@@ -4,7 +4,7 @@ namespace App\Recipe\Contracts;
 
 use stdClass;
 use App\Recipe\Recipe;
-use App\Ingredient\Ingredient;
+use App\Recipe\RecipeIngredient;
 
 interface RecipeSource
 {
@@ -14,5 +14,8 @@ interface RecipeSource
 
     public function persistRecipe(Recipe $recipeToCreate) : int;
 
-    public function addIngredientToRecipe($recipeId, Ingredient $Ingredient, $amount) : bool;
+    public function addIngredientToRecipe(
+        $recipeId,
+        RecipeIngredient $recipeIngredient
+    ) : bool;
 }

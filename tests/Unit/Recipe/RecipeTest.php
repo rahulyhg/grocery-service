@@ -3,6 +3,7 @@
 namespace App\Recipe;
 
 use PHPUnit\Framework\TestCase;
+use App\Ingredient\Ingredient;
 
 class RecipeTest extends TestCase
 {
@@ -98,7 +99,12 @@ class RecipeTest extends TestCase
     */
     public function itShouldBeAbleToAddAnIngredient()
     {
-        $this->sut->addIngredient(new \stdClass);
+        $exampleRecipeIngredient = new RecipeIngredient(
+            (new Ingredient('Bread'))->setId(1),
+            '4 slices'
+        );
+
+        $this->sut->addIngredient($exampleRecipeIngredient);
 
         $this->assertCount(1, $this->sut->getIngredients());
     }
@@ -108,8 +114,13 @@ class RecipeTest extends TestCase
     */
     public function itShouldBeAbleToAddManyIngredients()
     {
-        $this->sut->addIngredient(new \stdClass)
-            ->addIngredient(new \stdClass);
+        $exampleRecipeIngredient = new RecipeIngredient(
+            (new Ingredient('Bread'))->setId(1),
+            '4 slices'
+        );
+
+        $this->sut->addIngredient($exampleRecipeIngredient)
+            ->addIngredient($exampleRecipeIngredient);
 
         $this->assertCount(2, $this->sut->getIngredients());
     }

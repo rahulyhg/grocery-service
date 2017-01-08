@@ -2,7 +2,7 @@
 
 use App\Recipe\Contracts\RecipeSource;
 use App\Recipe\Recipe;
-use App\Ingredient\Ingredient;
+use App\Recipe\RecipeIngredient;
 
 class CreateRecipeTest extends TestCase
 {
@@ -81,8 +81,7 @@ class CreateRecipeTest extends TestCase
 
                 public function addIngredientToRecipe(
                     $recipeId,
-                    Ingredient $Ingredient,
-                    $amount
+                    RecipeIngredient $recipeIngredient
                 ) : bool {
                     return true;
                 }

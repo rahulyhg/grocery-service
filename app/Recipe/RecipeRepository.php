@@ -70,19 +70,18 @@ class RecipeRepository
             $ingredientId
         );
 
+        $recipeIngredient = new RecipeIngredient(
+            $ingredient,
+            $amount
+        );
+
         $success = $this->source->addIngredientToRecipe(
             $recipeId,
-            $ingredient,
-            $amount
+            $recipeIngredient
         );
 
-        if (!$success) {
-            return null;
-        }
-
-        return new RecipeIngredient(
-            $ingredient,
-            $amount
-        );
+        return !$success
+            ? null
+            : $recipeIngredient;
     }
 }

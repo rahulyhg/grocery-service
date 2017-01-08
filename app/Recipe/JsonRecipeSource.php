@@ -5,7 +5,7 @@ namespace App\Recipe;
 use stdClass;
 use App\Traits\IsJsonSource;
 use App\Recipe\Contracts\RecipeSource;
-use App\Ingredient\Ingredient;
+use App\Recipe\RecipeIngredient;
 
 class JsonRecipeSource implements RecipeSource
 {
@@ -58,11 +58,10 @@ class JsonRecipeSource implements RecipeSource
 
     public function addIngredientToRecipe(
         $recipeId,
-        Ingredient $ingredient,
-        $amount
+        RecipeIngredient $recipeIngredient
     ) : bool {
         $recipe = $this->findById($recipeId);
-        $recipe->ingredients[] = $ingredient;
+        $recipe->ingredients[] = $recipeIngredient;
 
         return $this->updateRecipe($recipe);
     }
