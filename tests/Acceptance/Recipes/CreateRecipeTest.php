@@ -2,6 +2,7 @@
 
 use App\Recipe\Contracts\RecipeSource;
 use App\Recipe\Recipe;
+use App\Ingredient\Ingredient;
 
 class CreateRecipeTest extends TestCase
 {
@@ -76,6 +77,14 @@ class CreateRecipeTest extends TestCase
                 public function persistRecipe(Recipe $recipeToCreate) : int
                 {
                     return 1337;
+                }
+
+                public function addIngredientToRecipe(
+                    $recipeId,
+                    Ingredient $Ingredient,
+                    $amount
+                ) : bool {
+                    return true;
                 }
             };
         };

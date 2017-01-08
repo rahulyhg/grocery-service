@@ -5,6 +5,7 @@ namespace App\Recipe;
 use stdClass;
 use App\Traits\IsJsonSource;
 use App\Recipe\Contracts\RecipeSource;
+use App\Ingredient\Ingredient;
 
 class JsonRecipeSource implements RecipeSource
 {
@@ -53,5 +54,32 @@ class JsonRecipeSource implements RecipeSource
         );
 
         return $id;
+    }
+
+    public function addIngredientToRecipe(
+        $recipeId,
+        Ingredient $ingredient,
+        $amount
+    ) : bool {
+        $recipe = $this->findById($recipeId);
+        $recipe->ingredients[] = $ingredient;
+
+        return $this->updateRecipe($recipe);
+    }
+
+    private function updateRecipe(stdClass $recipe) : bool
+    {
+        $file = $this->dataDir . 'recipe-' . $recipe->id . '.json';
+
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        file_put_contents(
+            $file,
+            json_encode($recipe, JSON_PRETTY_PRINT)
+        );
+
+        return true;
     }
 }

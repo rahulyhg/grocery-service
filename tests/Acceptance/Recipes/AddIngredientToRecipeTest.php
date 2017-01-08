@@ -9,7 +9,7 @@ class AddIngredientToRecipeTest extends TestCase
     {
         $response = $this->call(
             'PUT',
-            '/recipe/1/ingredients',
+            '/recipes/1/ingredients',
             [
                 'ingredient_id' => 1,
                 'amount' => '4 slices'

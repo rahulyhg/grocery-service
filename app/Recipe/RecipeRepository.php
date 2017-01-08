@@ -2,15 +2,26 @@
 
 namespace App\Recipe;
 
+use App\Ingredient\Ingredient;
 use App\Recipe\Contracts\RecipeSource;
+use App\Ingredient\IngredientRepository;
+use App\Ingredient\IngredientNotFoundException;
 
 class RecipeRepository
 {
+    private $source;
+
+    private $ingredientRepo;
+
+    private $hydrator;
+
     public function __construct(
         RecipeSource $source,
+        IngredientRepository $ingredientRepo,
         RecipeHydrator $hydrator
     ) {
         $this->source = $source;
+        $this->ingredientRepo = $ingredientRepo;
         $this->hydrator = $hydrator;
     }
 
@@ -48,5 +59,30 @@ class RecipeRepository
         $recipeToCreate->setId($recipeId);
 
         return $recipeToCreate;
+    }
+
+    public function addIngredientToRecipe(
+        int $recipeId,
+        int $ingredientId,
+        string $amount
+    ) : ?RecipeIngredient {
+        $ingredient = $this->ingredientRepo->findById(
+            $ingredientId
+        );
+
+        $success = $this->source->addIngredientToRecipe(
+            $recipeId,
+            $ingredient,
+            $amount
+        );
+
+        if (!$success) {
+            return null;
+        }
+
+        return new RecipeIngredient(
+            $ingredient,
+            $amount
+        );
     }
 }

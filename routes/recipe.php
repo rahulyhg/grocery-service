@@ -21,6 +21,11 @@ $app->get(
     'RecipeController@show'
 );
 
+$app->put(
+    '/recipes/{id}/ingredients',
+    'RecipeController@addIngredient'
+);
+
 $app->post(
     '/recipes',
     'RecipeController@store'

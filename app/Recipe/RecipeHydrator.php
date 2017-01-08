@@ -3,9 +3,18 @@
 namespace App\Recipe;
 
 use stdClass;
+use App\Ingredient\IngredientHydrator;
 
 class RecipeHydrator
 {
+    private $ingredientHydrator;
+
+    public function __construct(
+        IngredientHydrator $ingredientHydrator
+    ) {
+        $this->ingredientHydrator = $ingredientHydrator;
+    }
+
     public function hydrate(stdClass $data) : Recipe
     {
         $this->validate($data);
@@ -19,6 +28,10 @@ class RecipeHydrator
 
         if (isset($data->id)) {
             $recipe->setId($data->id);
+        }
+
+        if (isset($data->ingredients)) {
+            $this->addIngredients($recipe, $data->ingredients);
         }
 
         return $recipe;
@@ -38,5 +51,18 @@ class RecipeHydrator
         throw new \InvalidArgumentException(
             'A name, description, method and servings is required to build a Recipe'
         );
+    }
+
+    private function addIngredients(
+        Recipe $recipe,
+        array $ingredients
+    ) {
+        foreach ($ingredients as $ingredient) {
+            $ingredientToAdd = $this->ingredientHydrator->hydrate(
+                $ingredient
+            );
+
+            $recipe->addIngredient($ingredientToAdd);
+        }
     }
 }

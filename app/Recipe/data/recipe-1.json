@@ -4,5 +4,34 @@
     "description": "The perfect blend between blandness and lazyness",
     "method": "Get bread, butter it then stick ham in the middle fool!",
     "servings": 1,
-    "ingredients": []
+    "ingredients": [
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        },
+        {
+            "id": 1,
+            "name": "Bread"
+        }
+    ]
 }

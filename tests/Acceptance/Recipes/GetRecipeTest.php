@@ -2,6 +2,7 @@
 
 use App\Recipe\Contracts\RecipeSource;
 use App\Recipe\Recipe;
+use App\Ingredient\Ingredient;
 
 class GetRecipeTest extends TestCase
 {
@@ -44,6 +45,8 @@ class GetRecipeTest extends TestCase
      */
     public function itShouldReturnASingleRecipe()
     {
+        $this->configureStubRecipeSource();
+
         $response = $this->call(
             'GET',
             '/recipes/1'
@@ -82,12 +85,19 @@ class GetRecipeTest extends TestCase
             return new class implements RecipeSource {
                 public function findById(int $recipeId) : ?stdClass
                 {
+                    $baseDir = __DIR__ . '/../../../app/Recipe/data/';
+                    $recipe = json_decode(file_get_contents($baseDir.'recipe-1.json'));
+                    $recipe->ingredients = [];
+
+                    return $recipe;
                 }
 
                 public function findAll() : array
                 {
                     $baseDir = __DIR__ . '/../../../app/Recipe/data/';
                     $recipe1 = json_decode(file_get_contents($baseDir.'recipe-1.json'));
+                    $recipe1->ingredients = [];
+
                     $recipe2 = json_decode(file_get_contents($baseDir.'recipe-2.json'));
 
                     return [$recipe1, $recipe2];
@@ -96,6 +106,14 @@ class GetRecipeTest extends TestCase
                 public function persistRecipe(Recipe $recipeToCreate) : int
                 {
                     return 1;
+                }
+
+                public function addIngredientToRecipe(
+                    $recipeId,
+                    Ingredient $Ingredient,
+                    $amount
+                ) : bool {
+                    return true;
                 }
             };
         };

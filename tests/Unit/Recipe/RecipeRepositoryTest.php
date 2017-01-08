@@ -2,19 +2,40 @@
 
 namespace App\Recipe;
 
+use App\Ingredient\Ingredient;
 use App\Recipe\Contracts\RecipeSource;
+use App\Ingredient\IngredientRepository;
+use App\Ingredient\IngredientHydrator;
 
 class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
 {
+    const TEST_RECIPE_ID = 1;
+    const TEST_INGREDIENT_ID = 1;
+    const TEST_AMOUNT = '4 slices';
+
+    private $source;
+
+    private $ingredientRepo;
+
+    private $sut;
+
     public function setUp()
     {
         parent::setUp();
 
         $this->source = $this->createMock(RecipeSource::class);
-        $this->hydrator = $this->createMock(RecipeHydrator::class);
+
+        $this->ingredientRepo = $this->getMockBuilder(IngredientRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->hydrator = $this->getMockBuilder(RecipeHydrator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->sut = new RecipeRepository(
             $this->source,
+            $this->ingredientRepo,
             $this->hydrator
         );
     }
@@ -92,9 +113,14 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
     {
         $this->setupExampleRecipeExpectation();
 
+        $hydrator = new RecipeHydrator(
+            new IngredientHydrator()
+        );
+
         $sut = new RecipeRepository(
             $this->source,
-            new RecipeHydrator
+            $this->ingredientRepo,
+            $hydrator
         );
 
         $recipe = $sut->findById(1);
@@ -123,6 +149,46 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
             123,
             $createdRecipe->getId()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldAddAnIngredientToARecipe()
+    {
+        $ingredient = $this->setUpAddIngredientToRecipe();
+
+        $expectedRecipeIngredient = new RecipeIngredient(
+            $ingredient,
+            self::TEST_AMOUNT
+        );
+
+        $recipeIngredient = $this->sut->addIngredientToRecipe(
+            self::TEST_RECIPE_ID,
+            self::TEST_INGREDIENT_ID,
+            self::TEST_AMOUNT
+        );
+
+        $this->assertEquals(
+            $expectedRecipeIngredient,
+            $recipeIngredient
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldReturnNullIfItEncountersAnIssueWhenAddingAnIngredientToARecipe()
+    {
+        $this->setUpAddIngredientToRecipe(false);
+
+        $recipeIngredient = $this->sut->addIngredientToRecipe(
+            self::TEST_RECIPE_ID,
+            self::TEST_INGREDIENT_ID,
+            self::TEST_AMOUNT
+        );
+        
+        $this->assertNull($recipeIngredient);
     }
 
     private function buildExampleRecipe()
@@ -157,5 +223,26 @@ class RecipeRepositoryTest extends \PHPUnit\Framework\TestCase
                 'method' => 'aaaaa',
                 'servings' => 1
             ]);
+    }
+
+    private function setUpAddIngredientToRecipe($success = true)
+    {
+        $ingredient = (new Ingredient('Bread'))
+            ->setId(1);
+
+        $this->ingredientRepo->expects($this->once())
+            ->method('findById')
+            ->willReturn($ingredient);
+
+        $this->source->expects($this->once())
+            ->method('addIngredientToRecipe')
+            ->with(
+                $this->equalTo(self::TEST_RECIPE_ID),
+                $this->equalTo($ingredient),
+                $this->equalTo(self::TEST_AMOUNT)
+            )
+            ->willReturn($success);
+
+        return $ingredient;
     }
 }

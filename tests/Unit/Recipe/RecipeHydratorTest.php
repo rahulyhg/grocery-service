@@ -2,11 +2,20 @@
 
 namespace App\Recipe;
 
+use App\Ingredient\IngredientHydrator;
+use App\Ingredient\Ingredient;
+
 class RecipeHydratorTest extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
-        $this->sut = new RecipeHydrator;
+        $this->ingredientHydrator = $this->getMockBuilder(IngredientHydrator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->sut = new RecipeHydrator(
+            $this->ingredientHydrator
+        );
     }
 
     /**
@@ -67,5 +76,53 @@ class RecipeHydratorTest extends \PHPUnit\Framework\TestCase
                 'description' => 'asdf'
             ]
         );
+    }
+
+    /**
+     * @test
+     */
+    public function itShouldHydrateIngredientsIfTheyArePresent()
+    {
+        $expectedIngredients = $this->getExampleIngredients();
+
+        $this->ingredientHydrator->expects($this->at(0))
+            ->method('hydrate')
+            ->willReturn($expectedIngredients[0]);
+        $this->ingredientHydrator->expects($this->at(1))
+            ->method('hydrate')
+            ->willReturn($expectedIngredients[1]);
+
+        $recipe = $this->sut->hydrate(
+            (object) [
+                'id' => 12,
+                'name' => 'asdf',
+                'description' => 'asdf',
+                'method' => 'asdf',
+                'servings' => 123,
+                'ingredients' => [
+                     (object) [
+                        'id' => 1,
+                        'name' => 'Bread'
+                    ],
+                    (object) [
+                        'id' => 2,
+                        'name' => 'Ham'
+                    ]
+                ]
+            ]
+        );
+
+        $this->assertEquals(
+            $expectedIngredients,
+            $recipe->getIngredients()
+        );
+    }
+
+    private function getExampleIngredients()
+    {
+        $ingredient1 = (new Ingredient('Bread'))->setId(1);
+        $ingredient2 = (new Ingredient('Ham'))->setId(2);
+
+        return [$ingredient1, $ingredient2];
     }
 }

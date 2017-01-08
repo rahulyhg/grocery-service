@@ -6,20 +6,25 @@ use App\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Validation\Factory as Validator;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Ingredient\IngredientHydrator;
 
 final class RecipeController extends Controller
 {
     private $recipeRepo;
 
-    private $hydrator;
+    private $recipeHydrator;
+
+    private $ingredientHydrator;
 
     public function __construct(
         RecipeRepository $recipeRepo,
-        RecipeHydrator $hydrator,
+        RecipeHydrator $recipeHydrator,
+        IngredientHydrator $ingredientHydrator,
         Validator $validator
     ) {
         $this->recipeRepo = $recipeRepo;
-        $this->hydrator = $hydrator;
+        $this->recipeHydrator = $recipeHydrator;
+        $this->ingredientHydrator = $ingredientHydrator;
         $this->validator = $validator;
     }
 
@@ -59,7 +64,7 @@ final class RecipeController extends Controller
             return $this->badRequest($validator->errors());
         }
 
-        $recipeToCreate = $this->hydrator->hydrate(
+        $recipeToCreate = $this->recipeHydrator->hydrate(
             (object) $request->all()
         );
 
@@ -68,5 +73,16 @@ final class RecipeController extends Controller
         );
 
         return $this->success($newRecipe);
+    }
+
+    public function addIngredient(Request $request, $recipeId)
+    {
+        $recipeIngredient = $this->recipeRepo->addIngredientToRecipe(
+            $recipeId,
+            $request->get('ingredient_id'),
+            $request->get('amount')
+        );
+
+        return $this->success($recipeIngredient);
     }
 }
